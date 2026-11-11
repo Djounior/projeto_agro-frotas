@@ -1,0 +1,16 @@
+{
+  "expo": {
+    "name": "Agro Frotas",
+    "slug": "agro-frotas",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "scheme": "agrofrotas",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "ios": { "supportsTablet": true, "bundleIdentifier": "com.agrofrotas.app" },
+    "android": { "package": "com.agrofrotas.app" },
+    "web": { "bundler": "metro", "output": "single" },
+    "plugins": ["expo-router"],
+    "experiments": { "typedRoutes": false }
+  }
+}
