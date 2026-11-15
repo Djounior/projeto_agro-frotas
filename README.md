@@ -40,22 +40,6 @@ npm install
 5. **Configurações do projeto → Seus apps → Web (`</>`)**: registre um app e copie as chaves.
 6. Copie `.env.example` para `.env` e preencha:
 
-```bash
-# macOS / Linux
-cp .env.example .env
-
-# Windows (Prompt de Comando)
-copy .env.example .env
-```
-
-```
-EXPO_PUBLIC_FIREBASE_API_KEY=...
-EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN=...
-EXPO_PUBLIC_FIREBASE_PROJECT_ID=...
-EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET=...
-EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID=...
-EXPO_PUBLIC_FIREBASE_APP_ID=...
-```
 
 > O arquivo `.env` está no `.gitignore` e não deve ser versionado.
 > O `.env` só é lido quando o Metro inicia: depois de alterá-lo, reinicie com `npx expo start -c`.
