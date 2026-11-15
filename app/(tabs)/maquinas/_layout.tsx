@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+import { HeaderUsuario } from '@/components/header-usuario';
 import { colors } from '@/lib/theme';
 
 export default function MaquinasLayout() {
@@ -11,7 +12,10 @@ export default function MaquinasLayout() {
         contentStyle: { backgroundColor: colors.background },
       }}
     >
-      <Stack.Screen name="index" options={{ title: 'Máquinas' }} />
+      <Stack.Screen
+        name="index"
+        options={{ title: 'Máquinas', headerLeft: () => <HeaderUsuario /> }}
+      />
       <Stack.Screen name="cadastro" options={{ title: 'Cadastro de máquina' }} />
       <Stack.Screen name="detalhe" options={{ title: 'Detalhes da máquina' }} />
     </Stack>

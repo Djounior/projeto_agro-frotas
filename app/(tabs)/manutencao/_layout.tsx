@@ -1,4 +1,5 @@
 import { Stack } from 'expo-router';
+import { HeaderUsuario } from '@/components/header-usuario';
 import { colors } from '@/lib/theme';
 
 export default function ManutencaoLayout() {
@@ -11,7 +12,10 @@ export default function ManutencaoLayout() {
         contentStyle: { backgroundColor: colors.background },
       }}
     >
-      <Stack.Screen name="cadastro" options={{ title: 'Nova manutenção' }} />
+      <Stack.Screen
+        name="cadastro"
+        options={{ title: 'Nova manutenção', headerLeft: () => <HeaderUsuario /> }}
+      />
     </Stack>
   );
 }

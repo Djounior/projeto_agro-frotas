@@ -9,10 +9,14 @@ import { useMaquinaDetalhe } from '@/hooks/use-maquinas';
 import { dataBR, formatarHoras, formatarMoeda, revisaoProxima } from '@/lib/format';
 import { colors, spacing } from '@/lib/theme';
 import { Manutencao, ROTULO_TIPO } from '@/lib/types';
+import { useToast } from '@/components/ui/toast';
+import { confirmar } from '@/lib/confirmar';
+import { excluirMaquina } from '@/services/maquinas';
 
 export default function DetalheMaquina() {
   const { id } = useLocalSearchParams<{ id?: string }>();
   const router = useRouter();
+  const { mostrar } = useToast();
   const { maquina, manutencoes, custoTotal, carregando, erro } = useMaquinaDetalhe(id);
 
   if (carregando) {
@@ -28,6 +32,18 @@ export default function DetalheMaquina() {
   }
 
   const alerta = revisaoProxima(maquina.horimetro, maquina.proximaRevisao);
+
+  const excluir = async () => {
+  const ok = await confirmar('Excluir máquina', `Excluir "${maquina.nome}" e todo o histórico?`);
+  if (!ok) return;
+  try {
+    await excluirMaquina(maquina.id);
+    mostrar('Máquina excluída.', 'sucesso');
+    router.replace('/maquinas');
+  } catch {
+    mostrar('Não foi possível excluir.', 'erro');
+  }
+};
 
   const cabecalho = (
     <View style={{ gap: spacing.md, marginBottom: spacing.md }}>
@@ -79,6 +95,12 @@ export default function DetalheMaquina() {
           <Button titulo="Editar" variante="secundario" onPress={() => router.push(`/maquinas/cadastro?id=${maquina.id}`)} />
         </View>
       </View>
+
+      <View style={{ flexDirection: 'row', gap: spacing.sm }}>
+  <View style={{ flex: 1 }}>
+    <Button titulo="Excluir" variante="secundario" onPress={excluir} />
+  </View>
+  </View>
 
       <Text style={styles.secao}>Histórico de manutenções ({manutencoes.length})</Text>
     </View>

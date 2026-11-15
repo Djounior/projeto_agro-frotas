@@ -35,7 +35,10 @@ export function useMaquinaDetalhe(id: string | undefined) {
   const [erro, setErro] = useState<string | null>(null);
 
   const recarregar = useCallback(async () => {
-    if (!id) return;
+    if (!id) {
+  setCarregando(false);
+  return;
+}
     try {
       setErro(null);
       const [m, lista] = await Promise.all([obterMaquina(id), listarManutencoes(id)]);

@@ -6,6 +6,7 @@ import { MaquinaCard } from '@/components/maquina-card';
 import { Card } from '@/components/ui/card';
 import { EmptyState } from '@/components/ui/empty-state';
 import { useMaquinas } from '@/hooks/use-maquinas';
+import { useTituloWeb } from '@/hooks/use-web';
 import { revisaoProxima } from '@/lib/format';
 import { colors, spacing } from '@/lib/theme';
 import { ROTULO_STATUS, STATUS_MAQUINA, StatusMaquina } from '@/lib/types';
@@ -19,6 +20,7 @@ const ICONE: Record<StatusMaquina, keyof typeof Ionicons.glyphMap> = {
 export default function Painel() {
   const router = useRouter();
   const { maquinas, carregando, erro, recarregar } = useMaquinas();
+  useTituloWeb('Painel');
 
   const contagem = useMemo(() => {
     const c: Record<StatusMaquina, number> = { operando: 0, manutencao: 0, parada: 0 };
@@ -91,7 +93,13 @@ export default function Painel() {
 
 const styles = StyleSheet.create({
   centro: { flex: 1, alignItems: 'center', justifyContent: 'center' },
-  conteudo: { padding: spacing.md, gap: spacing.md },
+  conteudo: {
+    padding: spacing.md,
+    gap: spacing.md,
+    width: '100%',
+    maxWidth: 1100,
+    alignSelf: 'center',
+  },
   secao: { fontSize: 17, fontWeight: '700', color: colors.text, marginTop: spacing.sm },
   contadores: { flexDirection: 'row', gap: spacing.sm },
   contador: { flex: 1, alignItems: 'center', gap: 4, paddingHorizontal: spacing.sm },

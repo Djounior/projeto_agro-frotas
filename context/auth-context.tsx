@@ -1,6 +1,6 @@
 import { onAuthStateChanged, signOut as fbSignOut, User } from 'firebase/auth';
 import { createContext, ReactNode, useContext, useEffect, useState } from 'react';
-import { auth } from '@/services/firebase';
+import { auth } from '@/firebase';
 
 interface AuthValue {
   usuario: User | null;
@@ -20,12 +20,16 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   const [usuario, setUsuario] = useState<User | null>(null);
   const [carregando, setCarregando] = useState(true);
 
-  useEffect(() => {
-    return onAuthStateChanged(auth, (u) => {
+ useEffect(() => {
+  return onAuthStateChanged(
+    auth,
+    (u) => {
       setUsuario(u);
       setCarregando(false);
-    });
-  }, []);
+    },
+    () => setCarregando(false),
+  );
+}, []);
 
   const sair = async () => {
     await fbSignOut(auth);

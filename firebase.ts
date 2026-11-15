@@ -2,18 +2,18 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getApp, getApps, initializeApp } from 'firebase/app';
 import * as FirebaseAuth from 'firebase/auth';
 import type { Auth, Persistence } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, initializeFirestore } from 'firebase/firestore';
 import { Platform } from 'react-native';
 
-const firebaseConfig = {
-  apiKey: process.env.EXPO_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.EXPO_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.EXPO_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.EXPO_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.EXPO_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.EXPO_PUBLIC_FIREBASE_APP_ID,
-};
 
+const firebaseConfig = {
+  apiKey: "AIzaSyBFNfpCwFuoLzHMJ7bFT-TSAkRTfdlvlYo",
+  authDomain: "agrofrota-25e78.firebaseapp.com",
+  projectId: "agrofrota-25e78",
+  storageBucket: "agrofrota-25e78.firebasestorage.app",
+  messagingSenderId: "1067551562709",
+  appId: "1:1067551562709:web:fd6fee79fa589897323b5c",
+};
 const app = getApps().length ? getApp() : initializeApp(firebaseConfig);
 
 type RNPersistenceFactory = (storage: typeof AsyncStorage) => Persistence;
@@ -32,6 +32,16 @@ function criarAuth(): Auth {
     return FirebaseAuth.getAuth(app);
   }
 }
+function criarDb() {
+  try {
+    return initializeFirestore(app, { experimentalForceLongPolling: true });
+  } catch {
+    return getFirestore(app); // fast refresh: já foi inicializado
+  }
+}
 
+export const db = criarDb();
 export const auth = criarAuth();
-export const db = getFirestore(app);
+//export const db = getFirestore(app);
+
+

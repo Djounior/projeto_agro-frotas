@@ -1,17 +1,34 @@
 import { Ionicons } from '@expo/vector-icons';
 import { Tabs } from 'expo-router';
 import { Pressable } from 'react-native';
+import { BarraLateral, BarraLateralProps } from '@/components/barra-lateral';
+import { HeaderUsuario } from '@/components/header-usuario';
 import { useAuth } from '@/context/auth-context';
+import { useLayout } from '@/lib/plataforma';
 import { colors } from '@/lib/theme';
+
+type NomeIcone = keyof typeof Ionicons.glyphMap;
+
+/** Cria o ícone da aba. O `as never` evita o conflito de tipos entre versões. */
+const icone = (nome: NomeIcone) =>
+  (({ color, size }: { color: string; size: number }) => (
+    <Ionicons name={nome} size={size} color={color} />
+  )) as never;
 
 export default function TabsLayout() {
   const { sair } = useAuth();
+  const { largo } = useLayout();
 
   return (
     <Tabs
+      tabBar={
+        largo ? (props) => <BarraLateral {...(props as unknown as BarraLateralProps)} /> : undefined
+      }
       screenOptions={{
-        tabBarActiveTintColor: colors.primary,
-        tabBarInactiveTintColor: colors.muted,
+        tabBarPosition: largo ? 'left' : 'bottom',
+        tabBarStyle: { backgroundColor: colors.primary, borderTopWidth: 0 },
+        tabBarActiveTintColor: '#fff',
+        tabBarInactiveTintColor: '#B9D0BF',
         tabBarLabelStyle: { fontWeight: '600' },
         headerStyle: { backgroundColor: colors.primary },
         headerTintColor: '#fff',
@@ -22,7 +39,8 @@ export default function TabsLayout() {
         name="index"
         options={{
           title: 'Painel',
-          tabBarIcon: ({ color, size }) => <Ionicons name="speedometer" size={size} color={color} />,
+          tabBarIcon: icone('speedometer'),
+          headerLeft: () => <HeaderUsuario />,
           headerRight: () => (
             <Pressable onPress={sair} hitSlop={10} style={{ marginRight: 16 }}>
               <Ionicons name="log-out-outline" size={24} color="#fff" />
@@ -32,19 +50,11 @@ export default function TabsLayout() {
       />
       <Tabs.Screen
         name="maquinas"
-        options={{
-          title: 'Máquinas',
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => <Ionicons name="construct" size={size} color={color} />,
-        }}
+        options={{ title: 'Máquinas', headerShown: false, tabBarIcon: icone('construct') }}
       />
       <Tabs.Screen
         name="manutencao"
-        options={{
-          title: 'Manutenção',
-          headerShown: false,
-          tabBarIcon: ({ color, size }) => <Ionicons name="build" size={size} color={color} />,
-        }}
+        options={{ title: 'Manutenção', headerShown: false, tabBarIcon: icone('build') }}
       />
     </Tabs>
   );

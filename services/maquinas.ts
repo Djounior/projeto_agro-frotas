@@ -9,8 +9,9 @@ import {
   query,
   runTransaction,
   updateDoc,
+  writeBatch,
 } from 'firebase/firestore';
-import { db } from '@/services/firebase';
+import { db } from '@/firebase';
 import type {
   Manutencao,
   ManutencaoInput,
@@ -33,9 +34,17 @@ function paraMaquina(id: string, d: Record<string, unknown>): Maquina {
     status: d.status as Maquina['status'],
   };
 }
+function comTimeout<T>(p: Promise<T>, ms = 10000): Promise<T> {
+  return Promise.race([
+    p,
+    new Promise<T>((_, rej) =>
+      setTimeout(() => rej(new Error('Tempo esgotado. Verifique sua conexão e o Firestore.')), ms),
+    ),
+  ]);
+}
 
 export async function listarMaquinas(): Promise<Maquina[]> {
-  const snap = await getDocs(query(collection(db, COLECAO), orderBy('nome')));
+  const snap = await comTimeout(getDocs(query(collection(db, COLECAO), orderBy('nome'))));
   return snap.docs.map((s) => paraMaquina(s.id, s.data()));
 }
 
@@ -73,11 +82,20 @@ export async function atualizarMaquina(id: string, input: MaquinaInput): Promise
 
 export async function alterarStatus(id: string, status: StatusMaquina): Promise<void> {
   await updateDoc(doc(db, COLECAO, id), { status });
+
+}
+
+export async function excluirMaquina(id: string): Promise<void> {
+  const subs = await getDocs(collection(db, COLECAO, id, 'manutencoes'));
+  const lote = writeBatch(db); // limite de 500 operações por lote
+  subs.docs.forEach((d) => lote.delete(d.ref));
+  lote.delete(doc(db, COLECAO, id));
+  await lote.commit();
 }
 
 export async function listarManutencoes(maquinaId: string): Promise<Manutencao[]> {
-  const snap = await getDocs(
-    query(collection(db, COLECAO, maquinaId, 'manutencoes'), orderBy('data', 'desc')),
+   const snap = await comTimeout(
+    getDocs(query(collection(db, COLECAO, maquinaId, 'manutencoes'), orderBy('data', 'desc'))),
   );
   return snap.docs.map((s) => {
     const d = s.data();

@@ -6,8 +6,7 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { useToast } from '@/components/ui/toast';
 import { colors, spacing } from '@/lib/theme';
-import { auth } from '@/services/firebase';
-
+import { auth } from '../../firebase';
 function traduzirErro(e: unknown): string {
   const codigo = (e as { code?: string })?.code ?? '';
   switch (codigo) {
